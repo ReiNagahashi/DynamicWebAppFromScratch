@@ -9,7 +9,7 @@ use Helpers\Settings;
 class MySQLWrapper extends mysqli {
     // この新しいコンストラクタには、DB 設定データを取得し
     // 接続エラーが発生した際にエラーを投げ、親クラスのコンストラクタを呼び出すロジックが含まれています
-    public function __construct(?string $hostname = 'localhost', ? string $username = null,
+    public function __construct(?string $hostname = 'localhost', ?string $username = null,
     ?string $password = null, ?string $database = null, ?int $port = null, ?string $socket = null)
     {
         // 接続の失敗時にエラーを報告し、例外を投げる
