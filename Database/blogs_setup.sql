@@ -85,3 +85,31 @@ CREATE TABLE IF NOT EXISTS categories(
 -- ADD CONSTRAINT category_fk
 -- FOREIGN KEY (category_id) REFERENCES categories(category_id);
 
+
+
+CREATE TABLE IF NOT EXISTS subscriptions(
+    subscription_id INT PRIMARY KEY AUTO_INCREMENT,
+    subscription VARCHAR(20),
+    subscription_status VARCHAR(10),
+    subscription_created_at DATETIME,
+    subscription_end_at DATETIME,
+    user_id INT,
+    FOREIGN KEY user_fk(user_id) REFERENCES users(user_id)
+);
+
+-- 以下のusersテーブルから取得した情報をsubscriptionsテーブルに挿入する。また、各挿入時にsubscription_idとしてidが自動で割り当てられるようにする
+INSERT INTO subscriptions(subscription, subscription_status, subscription_created_at, subscription_end_at, user_id)
+SELECT
+    subscription,
+    subscription_status,
+    subscription_created_at,
+    subscription_end_at,
+    user_id
+FROM users;
+
+-- usersテーブルからsubscription関連のカラムを削除する
+ALTER TABLE users
+DROP subscription,
+DROP subscription_status,
+DROP subscription_created_at,
+DROP subscription_end_at;
