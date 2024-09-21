@@ -31,7 +31,7 @@ abstract class AbstractCommand implements Command
     private function setUpArgsMap(): void{
         //オリジナルのマッピングを設定
         $args = $GLOBALS['argv'];
-        // エイリアスのインデックスが見つかるまで探索
+        // エイリアスのインデックスが見つかるまで探索 array_searchはfind_index的な存在
         $startIndex  = array_search($this->getAlias(), $args);
 
         if($startIndex === false) throw new Exception(sprintf("Could not find alias %s", $this->getAlias()));

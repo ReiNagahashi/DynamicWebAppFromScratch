@@ -12,8 +12,7 @@ interface Command
     public static function isCommandValueRequired(): bool;
 
     /** @return bool | string
-     * 値が存在する場合は値の文字列か、パラメータが存在する場合はtrueを返す
-     * 引数が設定されていない場合はfalseを返す */
+     * 値が存在する場合は値の文字列を、さもなければ、引数が存在するかどうかをブール値で返す */
     public function getArgumentValue(string $arg): bool | string;
     public function execute(): int;
 }
