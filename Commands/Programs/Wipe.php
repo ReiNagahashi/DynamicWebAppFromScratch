@@ -5,6 +5,8 @@ use Commands\AbstractCommand;
 use Commands\Argument;
 use Exception;
 
+include "Mysql_config.php";
+
 class Wipe extends AbstractCommand{
     protected static ?string $alias = "wipe";
     protected static bool $requiredCommandValue = true;
@@ -38,8 +40,9 @@ class Wipe extends AbstractCommand{
     public function wipeDB(string $dbName): void{
         $this->log("Wiping Database...");
         
-        // MySQL コマンドでデータベース削除 現在はユーザー名等ををハードコーディング
-        $command = sprintf("mysql -u user_project_5 -p -e 'DROP DATABASE %s'", $dbName);
+        // MySQL コマンドでデータベース削除 
+        $command = sprintf("mysql -u%s -p%s -e 'DROP DATABASE %s'", Mysql_config::$mysql_username, Mysql_config::$mysql_password, $dbName);
+
 
         $output = null;
         $returnVar = null;
@@ -59,7 +62,7 @@ class Wipe extends AbstractCommand{
         $this->log("Backing up Database...");
         
         // MySQLコマンドでデータベースバックアップを取る
-        $command = sprintf("mysqldump -u user_project_5 -p %s > %s.sql", $dbName, $fileName);
+        $command = sprintf("mysqldump -u%s -p%s %s > %s.sql", Mysql_config::$mysql_username, Mysql_config::$mysql_password, $dbName, $fileName);
         $output = null;
         $returnVar = null;
 
@@ -76,7 +79,7 @@ class Wipe extends AbstractCommand{
     public function createDB(string $dbName): void{
         $this->log("Initializing Database...");
 
-        $command = sprintf("mysql -u user_project_5 -p -e 'CREATE DATABASE %s';", $dbName);
+        $command = sprintf("mysql -u%s -p%s -e 'CREATE DATABASE %s';", Mysql_config::$mysql_username, Mysql_config::$mysql_password, $dbName);
         $output = null;
         $returnVar = null;
 
