@@ -12,7 +12,6 @@ abstract class AbstractCommand implements Command
     protected ?string $value;
     protected array $argsMap = [];
     protected static ?string $alias = null;
-
     protected static bool $requiredCommandValue = false;
 
     /**
