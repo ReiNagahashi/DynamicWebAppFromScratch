@@ -1,4 +1,5 @@
 <?php
+// 今回はinit-app.php内でmigrateというコマンドがあった場合にincludeでこのファイルを実行している
 namespace Database;
 
 use Exception;
@@ -46,6 +47,7 @@ $result = $mysqli->query("
         PRIMARY KEY (carID, partID)
     );
 ");
+
 
 if($result == false) throw new Exception('Could not excute query.');
 else print("Successfully ran all SQL setup queries.".PHP_EOL);
