@@ -77,6 +77,8 @@ function insertPostQuery(
 }
 
 
+
+
 function runQuery(mysqli $mysqli, string $query): void{
     $result = $mysqli->query($query);
     if($result === false){
