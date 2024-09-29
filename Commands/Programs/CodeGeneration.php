@@ -2,6 +2,7 @@
 namespace Commands\Programs;
 // 新しいコマンドを生成し、新しいマイグレーションを生成する2つの機能が利用できる
 use Commands\AbstractCommand;
+use Exception;
 
 class CodeGeneration extends AbstractCommand
 {
@@ -17,8 +18,14 @@ class CodeGeneration extends AbstractCommand
 
     public function execute(): int
     {
-        $codeGenType = $this->getCommandValue();
-        $this->log('Generating code for.......' . $codeGenType);
+        $commandName = $this->getCommandValue();
+        if(substr($commandName, -4) != '.php') throw new Exception("Only .php format is accepted");
+
+        $filePath = sprintf("Commands/Programs/%s", $commandName);
+        $ok = file_put_contents($filePath, file_get_contents('Commands/boilerplate.php'));
+
+        if($ok === false) throw new Exception("Generating command file failed");
+
         return 0;
     }
 }

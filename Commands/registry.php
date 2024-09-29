@@ -4,7 +4,6 @@
 return [
     Commands\Programs\Migrate::class,
     Commands\Programs\CodeGeneration::class,
-    // 上の２つはサンプルコマンド
     Commands\Programs\Wipe::class,
     Commands\Programs\bookSearch::class
 ];
