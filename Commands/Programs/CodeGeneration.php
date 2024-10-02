@@ -62,6 +62,8 @@ class CodeGeneration extends AbstractCommand
         return <<<MIGRATION
         <?php
         namespace Database\Migrations;
+        use Database\SchemaMigration;
+
 
         class {$className} implements SchemaMigration
         {
