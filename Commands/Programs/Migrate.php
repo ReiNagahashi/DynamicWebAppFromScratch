@@ -70,7 +70,7 @@ class Migrate extends AbstractCommand
         $lastMigration = $this->getLastMigration();
         // ファイル名を日付順(ASC)に並べた配列を返す
         $allMigrations = $this->getAllMigrationFiles();
-
+        // まだmigrationsテーブル上に何もデータがない時は0でinit
         $startIndex = ($lastMigration)? array_search($lastMigration, $allMigrations) + 1 : 0;
 
         for($i = $startIndex; $i < count($allMigrations); $i++){
@@ -82,6 +82,7 @@ class Migrate extends AbstractCommand
             $migrationClass = $this->getClassnameFromMigrationFilename($filename);
             $migration = new $migrationClass();
             $this->log(sprintf("Processing up migration for %s", $migrationClass));
+            // ここで各マイグレーションファイル上で書いた名前のテーブルをマイグレートするクエリを返す
             $queries = $migration->up();
             if(empty($queries)) throw new \Exception("Must have queries to run for . " . $migrationClass);
 
@@ -107,7 +108,7 @@ class Migrate extends AbstractCommand
         return null;
     }
 
-
+// ここでmigrationsディレクトリ内のマイグレーションファイル群を取得してソートしている
     private function getAllMigrationFiles(string $order = "asc"): array{
         $directory = sprintf("%s/../../Database/Migrations", __DIR__);
         $this->log($directory);
@@ -168,8 +169,55 @@ class Migrate extends AbstractCommand
     }
 
 
-    // マイグレーションで問題があったときなどにマイグレーション前の状態に戻る処理
-    private function rollback(): void {
-        $this->log("Rolling back migration...\n");
+    // ロールバック：マイグレーションで問題があったときなどにマイグレーション前の状態に戻る処理
+        // 最後に実行されたマイグレーションのインデックスを探して、それを全てのロールバックの開始インデックスとして設定する
+        // それから１つずつマイグレーションのdownを実行し、次に進むためにインデックスを減らしていく
+    private function rollback(int $n = 1): void {
+        $this->log("Rolling back {$n} migration(s)...\n");
+
+        $lastMigration = $this->getLastMigration();
+        $allMigrations = $this->getAllMigrationFiles();
+
+        // ソートされたリストで最後のマイグレーションのインデックスを探す
+        $lastMigrationIndex = array_search($lastMigration, $allMigrations);
+
+        if($lastMigrationIndex === false){
+            $this->log("Could not find the last migration ran: " . $lastMigration);
+            return;
+        }
+
+        $count = 0;
+        // 毎回、マイグレーションのダウン関数を実行する
+        for($i = $lastMigrationIndex; $count < $n && $i >= 0; $i--){
+            $filename = $allMigrations[$i];
+            $this->log("Rolling back: {$filename}");
+
+            include_once($filename);
+
+            $migrationClass = $this->getClassnameFromMigrationFilename($filename);
+            $migration = new $migrationClass();
+
+            $queries = $migration->down();
+            if(empty($queries)) throw new \Exception("Must have queries to run for . " . $migrationClass);
+
+            $this->processQueries($queries);
+            $this->removeMigration($filename);
+            $count++;
+        }
+
+        $this->log("Rollback completed.\n");
+
+    }
+
+
+    private function removeMigration(string $filename): void{
+        $mysqli = new MySQLWrapper();
+        $statement = $mysqli->prepare("DELETE FROM migrations WHERE filename = ?");
+        if(!$statement) throw new \Exception("Prepare failed: (" . $mysqli->errno . ")" . $mysqli->error);
+
+        $statement->bind_param("s", $filename);
+        if(!$statement->execute()) throw new \Exception("Execution failed: (" . $statement->errno . ")" . $statement->error);
+
+        $statement->close();
     }
 }
