@@ -22,10 +22,12 @@ class CodeGeneration extends AbstractCommand
     public function execute(): int
     {
         $codeGenType = $this->getCommandValue();
+        // マイグレーションファイルの作成
         if($codeGenType === "migration"){
             $migrationName = $this->getArgumentValue("name");
             $this->generateMigrationFile($migrationName);
         }
+        // コマンドファイルの作成
         else{
             if(substr($codeGenType, -4) != '.php') throw new Exception("Only .php format is accepted");
             $filePath = sprintf("Commands/Programs/%s", $codeGenType);

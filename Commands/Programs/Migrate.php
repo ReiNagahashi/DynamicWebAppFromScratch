@@ -18,6 +18,7 @@ class Migrate extends AbstractCommand
     {
         return [
             // Argumentオブジェクトのrequiredはtrueにしたら、この場合は必ずrollbackという引数を取らなければエラーを返すようにする
+            // Argument がコマンド上での--OO という形で書く部分になる
             (new Argument('rollback'))->description('Roll backwards. An integer n may also be provided to rollback n times.')->required(false)->allowAsShort(false),
             (new Argument('init'))->description("Create the migrations table if it doesn't exist.")->required(false)->allowAsShort(true),
         ];
