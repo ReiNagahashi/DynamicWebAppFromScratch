@@ -11,18 +11,22 @@ use Database\Seeder;
 
 class Seed extends AbstractCommand{
     protected static ?string $alias = 'seed';
+    protected static bool $requiredCommandValue = true;
 
     public static function getArguments(): array{
         return [];
     }
 
     public function execute(): int{
-        $this->runAllSeeds();
+        $numberOfFakeData = $this->getCommandValue();
+        if(!is_numeric($numberOfFakeData)) throw new \Exception("Argument Error: Only digit value is accepted.");
+        
+        $this->runAllSeeds(intval($numberOfFakeData));
         return 0;
     }
 
 
-    function runAllSeeds(): void{
+    function runAllSeeds(int $numberOfFakeData): void{
         $directoryPath = __DIR__ . '/../../Database/Seeds';
         // 引数に持ってきたパスであるディレクトリ内の、ファイルを全て抽出する
         $files = scandir($directoryPath);
@@ -37,7 +41,7 @@ class Seed extends AbstractCommand{
 
                 if(class_exists($className) && is_subclass_of($className, Seeder::class)){
                     $seeder = new $className(new MySQLWrapper());
-                    $seeder->seed();
+                    $seeder->seed($numberOfFakeData);
                 }
                 else throw new \Exception('Seeder must be a class that subclass the seeder interface');
 

@@ -13,6 +13,7 @@ abstract class AbstractSeeder implements Seeder{
     protected ?string $tableName = null;
     // テーブルカラムは、'data_type'と'column_name'を含む連想配列
     protected array $tableColumns = [];
+    protected int $numberOfData = 0;
 
     // 使用可能なカラムのタイプ。これらはバリデーションとbind_param()のために使われる
     // キーはタイプの文字列で、値はbind_param()の文字列
@@ -27,7 +28,9 @@ abstract class AbstractSeeder implements Seeder{
         $this->conn = $conn;
     }
 
-    public function seed(): void{
+    public function seed(int $numberOfData): void{
+        $this->numberOfData = $numberOfData;
+
         $data = $this->createRowData();
 
         if($this->tableName === null) throw new \Exception("Class requires table name");

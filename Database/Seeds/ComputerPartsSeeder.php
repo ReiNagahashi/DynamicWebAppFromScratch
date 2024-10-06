@@ -2,6 +2,7 @@
 namespace Database\Seeds;
 
 use Database\AbstractSeeder;
+use Faker\Factory;
 
 // 具体的なシーダークラスはすべて、Seedsフォルダに格納される
 // →ここを一旦書いたら、もう一度AbstractSeederを見ると何をしているのがわかると思うよ
@@ -72,72 +73,44 @@ class ComputerPartsSeeder extends AbstractSeeder{
     ];
 
     public function createRowData(): array{
-        return[
-            [
-                'Ryzen 9 5900X',
-                'CPU',
-                'AMD',
-                '100-000000061',
-                '2020-11-05',
-                'A high-performance 12-core processor.',
-                90,
-                549.99,
-                0.05,
-                105.0,
-                0.04,
-                0.04,
-                0.005,
-                5
-            ],
-            [
-                'GeForce RTX 3080',
-                'GPU',
-                'NVIDIA',
-                '10G-P5-3897-KR',
-                '2020-09-17',
-                'A powerful gaming GPU with ray tracing support.',
-                93,
-                699.99,
-                0.04,
-                320.0,
-                0.285,
-                0.112,
-                0.05,
-                5
-            ],
-            [
-                'Samsung 970 EVO SSD',
-                'SSD',
-                'Samsung',
-                'MZ-V7E500BW',
-                '2018-04-24',
-                'A fast NVMe M.2 SSD with 500GB storage.',
-                88,
-                79.99,
-                0.02,
-                5.7,
-                0.08,
-                0.022,
-                0.0023,
-                5
-            ],
-            [
-                'Corsair Vengeance LPX 16GB',
-                'RAM',
-                'Corsair',
-                'CMK16GX4M2B3200C16',
-                '2015-08-10',
-                'A DDR4 memory kit operating at 3200MHz.',
-                85,
-                69.99,
-                0.03,
-                1.2,
-                0.137,
-                0.03,
-                0.007,
-                7
-            ]
-            ];
+        $listOfComputerParts = $this->generateListOfComputerPartsData();
+
+        return $listOfComputerParts;
     }
+
+    // 多分ここでfakerで記述するよりも、Abstractクラス状にあるデータタイプの変数の各フィールドに応じてデータを生成する方がいいかも？
+    private static function generateComputerPartsData(): array{
+        $faker = Factory::create();
+        return [
+            $faker->word(),
+            $faker->word(),
+            $faker->word(),
+            $faker->ean13(),
+            $faker->date(),
+            $faker->word(),
+            $faker->randomDigit(),
+            $faker->randomFloat(),
+            $faker->randomFloat(),
+            $faker->randomFloat(),
+            $faker->randomFloat(),
+            $faker->randomFloat(),
+            $faker->randomFloat(),
+            $faker->randomDigit()
+        ];
+    }
+
+    
+    private function generateListOfComputerPartsData(): array{
+        $parts = [];
+        for($i = 0; $i < $this->numberOfData; $i++){
+            $parts[] = self::generateComputerPartsData();
+        }
+
+        return $parts;
+    }
+
+
+
+
 
     }
