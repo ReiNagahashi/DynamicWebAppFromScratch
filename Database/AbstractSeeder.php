@@ -54,7 +54,7 @@ abstract class AbstractSeeder implements Seeder{
             if(!isset(static::AVAILABLE_TYPES[$columnDataType])) throw new \InvalidArgumentException(sprintf("The data type %s is not an available data type.", $columnDataType));
             // phpは値のデータタイプを返すget_debug_type()関数とgettype()関数の両方を提供する(クラス名でも機能するよ)
             // get_debug_typeはネイティブのphp8タイプを返す。例えば、floatsのgettype(4.5)は、ネイティブのデータタイプ'float'ではなく、文字列'double'を返す
-            if(get_debug_type($value) !== $columnDataType) throw new \InvalidArgumentException(sprintf("Value for %s should be of type %s. Here is the current is the current value: %s", $columnName, $columnDataType, json_encode($value)));
+            if(get_debug_type($value) !== $columnDataType) throw new \InvalidArgumentException(sprintf("Value for %s should be of type %s. Here is the current value: %s", $columnName, $columnDataType, json_encode($value)));
         }
     }
 

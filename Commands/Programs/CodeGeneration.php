@@ -27,6 +27,10 @@ class CodeGeneration extends AbstractCommand
             $migrationName = $this->getArgumentValue("name");
             $this->generateMigrationFile($migrationName);
         }
+        else if($codeGenType === "seeder"){
+            $seederName = $this->getArgumentValue("name");
+            $this->generateSeederFile($seederName);
+        }
         // コマンドファイルの作成
         else{
             if(substr($codeGenType, -4) != '.php') throw new Exception("Only .php format is accepted");
@@ -83,8 +87,51 @@ class CodeGeneration extends AbstractCommand
 
     }
 
+
+    private function generateSeederFile(string $seederName): void{
+        if(strlen($seederName) < 6 || substr($seederName, -6, 6) != "Seeder"){
+            $seederName = $seederName . "Seeder";
+        }
+
+        
+        $seederContent = $this->getSeederContent($seederName);
+        
+        $seederName = $seederName . ".php";
+        // 移行ファイルを保存するパスを指定
+        $path = sprintf("%s/../../Database/Seeds/%s", __DIR__, $seederName);
+
+        file_put_contents($path, $seederContent);
+        $this->log("Seeder file {$seederName} has been generated!");
+    }
+
+
+    private function getSeederContent(string $seederName): string{
+        $className = $this->pascalCase($seederName);
+
+        return <<< SEEDER
+        <?php
+            namespace Database\Seeds;
+
+            use Database\AbstractSeeder;
+
+            class {$className} extends AbstractSeeder{
+                // TODO: tableName文字列を割り当ててください
+
+                // TODO: tableColumns配列を割り当ててください
+
+                public function createRowData(): array{
+                    // TODO: createRowData()メソッドを実装してください
+                    return [];
+                }
+            }
+        SEEDER;
+
+    }
+
     private function pascalCase(string $string): string{
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
-    }
+    }    
+
+
 
 }
