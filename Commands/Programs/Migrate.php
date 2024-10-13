@@ -8,6 +8,7 @@ use Commands\Abstractcommand;
 use Commands\Argument;
 use Database\MySQLWrapper;
 
+
 class Migrate extends AbstractCommand
 {
     // 使用するコマンド名を設定
