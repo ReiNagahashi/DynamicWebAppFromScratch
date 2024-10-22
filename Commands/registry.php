@@ -6,6 +6,5 @@ return [
     Commands\Programs\CodeGeneration::class,
     Commands\Programs\Wipe::class,
     Commands\Programs\bookSearch::class,
-    Commands\Programs\Seed::class,
-    Commands\Programs\bookSearch::class
+    Commands\Programs\Seed::class
 ];

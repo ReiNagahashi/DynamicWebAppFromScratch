@@ -3,7 +3,6 @@
 spl_autoload_extensions(".php");
 spl_autoload_register();
 require_once 'vendor/autoload.php';
-
 $commands = include "Commands/registry.php";
 
 // 第2引数は実行するコマンド
