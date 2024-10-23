@@ -17,7 +17,6 @@ class HelperFunction{
 
         $stmt->execute();
         $result = $stmt->get_result();
-
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 }
