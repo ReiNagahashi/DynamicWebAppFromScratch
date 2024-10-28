@@ -2,10 +2,8 @@
 namespace Database\Seeds;
 
 use Database\AbstractSeeder;
-use Database\MySQLWrapper;
-use Exception;
 use Faker\Factory;
-use Helpers\HelperFunction;
+use Helpers\DatabaseHelper;
 
 class CarPartsSeeder extends AbstractSeeder{
     // TODO: tableName文字列を割り当ててください
@@ -36,7 +34,7 @@ class CarPartsSeeder extends AbstractSeeder{
 
     public function createRowData(): array{
         $listOfCarParts = $this->generateListOfCarPartsData();
-        print_r($listOfCarParts);
+
         return $listOfCarParts;
     }
 
@@ -57,14 +55,10 @@ class CarPartsSeeder extends AbstractSeeder{
 
     function generateListOfCarPartsData():array{
         $carParts = [];
-        // ここにcarsテーブルからidを全て取得した配列を用意する。
-        // その上で、その配列内の要素をランダムに取得した値を外部キーとする
-        $forgein_keys = HelperFunction::getIdsFromTable("cars");
-
-        if(count($forgein_keys) == 0) return [];
-
         for($i = 0; $i < $this->numberOfData; $i++){
-            $carParts[] = self::generateCarPartsData(array_rand($forgein_keys));
+            // 配列内の要素をランダムに取得したid値を外部キーとする
+            $random_part_id = DatabaseHelper::getRandomCarPart()['id'];
+            $carParts[] = self::generateCarPartsData($random_part_id);
         }
 
         return $carParts;

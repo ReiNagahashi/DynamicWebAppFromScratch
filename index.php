@@ -20,7 +20,7 @@ if(isset($routes[$path])){
         // getFields関数の返り値を展開→httpレスポンスの設定をする。その中の1つのキーが有名なContent-typeだったりする
         foreach($renderer->getFields() as $name => $value){
             // ヘッダーに対する単純な検証を実行
-            $sanitized_value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $sanitized_value = filter_var($value, FILTER_UNSAFE_RAW, FILTER_FLAG_NO_ENCODE_QUOTES);
 
             if($sanitized_value && $sanitized_value === $value){
                 header("{$name}: {$sanitized_value}");
