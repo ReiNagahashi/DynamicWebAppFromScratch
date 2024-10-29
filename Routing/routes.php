@@ -34,7 +34,18 @@ return [
     'api/parts' => function(): HTTPRenderer{
         $id = ValidationHelper::integer($_GET['id']??null);
         $part = DatabaseHelper::getComputerPartById($id);
-        
+
         return new JSONRenderer(['part' => $part]);
     },
+
+    'api/types' => function(): HTTPRenderer{
+        $parts = DatabaseHelper::getComputerPartsByType($_GET['type']??null);
+        $numberOfPerpage = ValidationHelper::integer($_GET['perpage']);
+        $numberOfPage = ValidationHelper::integer($_GET['page']);
+
+        $partsListPerPage = DatabaseHelper::getDataListPerPage($parts, $numberOfPerpage);
+        $partsOnSpecificPage = DatabaseHelper::getDataByPage($partsListPerPage, $numberOfPage);
+
+        return new JSONRenderer(['partsOnSpecificPage' => $partsOnSpecificPage]);
+    }
 ];
